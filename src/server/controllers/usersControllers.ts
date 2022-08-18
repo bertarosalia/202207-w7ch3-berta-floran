@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import User from "../../database/models/User";
-import { createToken, JwtPayload } from "../../utils/auth";
+import { createToken, hashCreator, JwtPayload } from "../../utils/auth";
+import CustomError from "../../utils/CustomError";
 
 export interface LoginData {
   userName: string;
@@ -23,16 +24,28 @@ export const loginUser = (req: Request, res: Response) => {
 
   res.status(200).json(responseData);
 };
+export interface UserRegister {
+  userName: string;
+  password: string;
+}
 
 export const registerUser = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const user = req.body;
-
+  const user: UserRegister = req.body;
+  user.password = await hashCreator(user.password);
   try {
-  } catch {
     const newUser = await User.create(user);
+    res.status(200).json({ user: newUser });
+  } catch (error) {
+    const customError = new CustomError(
+      400,
+      "Invalid user",
+      "Invalid athentication"
+    );
+    next(customError);
+    return;
   }
 };
