@@ -1,12 +1,13 @@
 import "../loadEnvironment";
 import jwt from "jsonwebtoken";
-
-interface JwtPayload {
-  id: "";
-  userName: "";
+import bcrypt from "bcryptjs";
+import { Request } from "express";
+export interface JwtPayload {
+  id: string;
+  userName: string;
 }
 export interface CustomRequest extends Request {
-  payload: string;
+  payload: JwtPayload;
 }
 
 export const createToken = (payload: JwtPayload) => {
@@ -15,4 +16,8 @@ export const createToken = (payload: JwtPayload) => {
 
 export const verifyToken = (token: string) => {
   return jwt.verify(token, process.env.SECRET);
+};
+export const hashCreator = (text: string) => {
+  const salt = 10;
+  return bcrypt.hash(text, salt);
 };
