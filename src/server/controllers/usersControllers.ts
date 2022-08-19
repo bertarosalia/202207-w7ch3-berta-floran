@@ -36,16 +36,17 @@ export const registerUser = async (
 ) => {
   const user: UserRegister = req.body;
   user.password = await hashCreator(user.password);
+
   try {
     const newUser = await User.create(user);
     res.status(200).json({ user: newUser });
   } catch (error) {
-    const customError = new CustomError(
+    const userError = new CustomError(
       400,
       "Invalid user",
       "Invalid athentication"
     );
-    next(customError);
+    next(userError);
     return;
   }
 };
