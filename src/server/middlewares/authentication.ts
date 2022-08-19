@@ -10,7 +10,7 @@ export const authentication = (
   const dataAutentication = req.get("Authorization");
   const error = new CustomError(400, "Bad request", "Error athentication");
 
-  if (!dataAutentication || dataAutentication.startsWith("Bearer")) {
+  if (!dataAutentication || !dataAutentication.startsWith("Bearer ")) {
     next(error);
     return;
   }
